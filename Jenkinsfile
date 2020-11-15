@@ -4,21 +4,39 @@ podTemplate(containers: [
 	volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
     node(POD_LABEL) {
 	git 'https://github.com/pmady/jenkins-helm-aks.git'
-	env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+	//env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
         stage('Build') {
-	    container('docker'){
-		sh 'docker build -t ACR/node-app:${GIT_COMMIT} .'
-		docker.withRegistry('https://$ACR', 'uqudo-acr') {
-		sh 'docker push $ACR/node-app:${GIT_COMMIT}'
-            } 
+	    container('docker') {
+	    withCredentials([[$class: 'UsernamePasswordMultiBinding',
+          credentialsId: 'ACR',
+          usernameVariable: 'DOCKER_HUB_USER',
+          passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+		sh ''' 
+		      GIT_COMMIT=test
+		      docker login -u $DOCKER_HUB_USER -p DOCKER_HUB_PASSWORD
+		      docker build -t $ACR/node-app:${GIT_COMMIT} .'
+		//docker.withRegistry('https://$ACR_ID', 'uqudo-acr') {
+		      docker push $ACR_ID/node-app:${GIT_COMMIT} '''
+         //   } 
+            }
 	   }
         }
 	
 	stage('Deploy') {
 	  container('helm') {
 	    stage('Install node-app helm chart') {
-            	sh 'helm upgrade --install node-app helm/node-app --set image.tag=${GIT_COMMIT} -n default'
+            	sh '''
+            	PACKAGE=demo-chart
+            	DEPLOYED=$(helm list |grep -E "^${PACKAGE}" |grep DEPLOYED |wc -l)
+                if [ $DEPLOYED == 0 ] ; then
+                helm install --name ${PACKAGE} my-charts/${PACKAGE}
+                else
+            	helm upgrade --install node-app helm/node-app --set image.tag=${GIT_COMMIT} -n default
+            	fi
+            	echo 'deployed successfully!'
+            	'''
+            	
 	   }
 	}
         }

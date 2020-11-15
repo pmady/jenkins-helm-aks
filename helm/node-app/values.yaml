@@ -5,7 +5,7 @@
 replicaCount: 3
 
 image:
-  repository: uqudo.azurecr.io/node-app
+  repository: acr.io/node-app
   tag: latest
 
 imagePullSecrets: []
