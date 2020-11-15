@@ -33,7 +33,7 @@ podTemplate(containers: [
                 //if [ $DEPLOYED == 0 ] ; then
                 //helm install --name ${PACKAGE} --set image.respository=$IMAGE_NAME--set image.tag=$TAG -n default
                 //else
-            	helm upgrade --name ${PACKAGE} --install node-app helm/node-app --set image.respository=$IMAGE_NAME--set image.tag=$TAG -n default
+            	helm upgrade --name ${PACKAGE} --install node-app helm/node-app --set image.respository=$IMAGE_NAME --set image.tag=$TAG -n default
             	//fi
             	echo 'deployed successfully!'
             	'''
