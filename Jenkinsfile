@@ -14,7 +14,7 @@ podTemplate(containers: [
           passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
 		sh ''' 
 		      TAG=test
-		      IMAGE_NAME=$ACR/node-app
+		      IMAGE_NAME=$ACR_ID/node-app
 		      docker login -u $DOCKER_HUB_USER -p DOCKER_HUB_PASSWORD
 		      docker build -t $IMAGE_NAME:$TAG .'
 		//docker.withRegistry('https://$ACR_ID', 'uqudo-acr') {
