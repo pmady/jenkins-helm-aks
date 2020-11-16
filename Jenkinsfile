@@ -3,7 +3,7 @@ podTemplate(containers: [
 	containerTemplate(name: 'helm', image: 'alpine/helm:3.3.0', ttyEnabled: true, command: 'cat')],
 	volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
     node('master') {
-	git 'https://github.com/pmady/jenkins-helm-aks.git'
+	//git 'https://github.com/pmady/jenkins-helm-aks.git'
 	//env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
         stage('Build') {
@@ -12,7 +12,8 @@ podTemplate(containers: [
           credentialsId: 'ACR',
           usernameVariable: 'DOCKER_HUB_USER',
           passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
-		sh ''' 
+		git url: 'git://github.com/pmady/jenkins-helm-aks.git', branch: 'master'
+		    sh ''' 
 		      TAG=test
 		      IMAGE_NAME=$ACR_ID/node-app
 		      docker login -u $DOCKER_HUB_USER -p DOCKER_HUB_PASSWORD
