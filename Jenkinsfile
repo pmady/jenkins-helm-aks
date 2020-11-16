@@ -1,8 +1,8 @@
-podTemplate(containers: [
+podTemplate(label: 'dind-helm-latest',containers: [
 	containerTemplate(name: 'docker', image: 'docker:19.03.5', ttyEnabled: true, command: 'cat'),
 	containerTemplate(name: 'helm', image: 'alpine/helm:3.3.0', ttyEnabled: true, command: 'cat')],
 	volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]) {
-    node {
+    node('master') {
 	//git 'https://github.com/pmady/jenkins-helm-aks.git'
 	//env.GIT_COMMIT = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 
