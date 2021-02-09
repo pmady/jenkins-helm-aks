@@ -5,7 +5,7 @@
 replicaCount: 3
 
 image:
-  repository: acr.io/node-app
+  repository: nginx
   tag: latest
 
 imagePullSecrets: []
@@ -13,4 +13,4 @@ imagePullSecrets: []
 service:
   type: ClusterIP
   port: 3000
-  targetPort: 3000
+  targetPort: 80
